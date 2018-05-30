@@ -1,3 +1,4 @@
+// Stopped on step 24 of Adding Class Structure to game
 class Board {
   constructor(numberOfRows, numberOfColumns, numberOfBombs) {
     this._numberOfBombs = numberOfBombs;
@@ -52,6 +53,42 @@ class Board {
     return this._numberOfTiles !== this._numberOfBombs;
 
     }
+
+  print(board) {
+    console.log(board.map(row => row.join(' | ')).join('\n'));
+  }
+
+  static generatePlayerBoard(numberOfRows, numberOfColumns){
+    let board = [];
+    for (let rowsIndex = 0; rowsIndex < numberOfRows; rowsIndex++) {
+      let row = [];
+      for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
+        row.push(' ');
+      };
+      board.push(row);
+    };
+    return board;
+  }
+  static generateBombBoard(numberOfRows, numberOfColumns, numberOfBombs) {
+    let board = [];
+    for (let rowsIndex = 0; rowsIndex < numberOfRows; rowsIndex++) {
+      let row = [];
+      for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
+        row.push(null);
+      };
+      board.push(row);
+    };
+  let numberOfBombsPlaced = 0;
+  while (numberOfBombsPlaced < numberOfBombs) {
+    // Need to learn about Control Flow to stop bombs from stacking
+    let randomRowIndex = Math.floor(Math.random() * numberOfRows);
+    let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
+    if (board[randomRowIndex][randomColumnIndex] !== 'B') {
+      board[randomRowIndex][randomColumnIndex] = 'B';
+      numberOfBombsPlaced++
+    }
+  }
+    return board;
   }
 
 }
@@ -69,27 +106,6 @@ const generatePlayerBoard = (numberOfRows, numberOfColumns) => {
   return board;
 };
 
-const generateBombBoard = (numberOfRows, numberOfColumns, numberOfBombs) => {
-  let board = [];
-  for (let rowsIndex = 0; rowsIndex < numberOfRows; rowsIndex++) {
-    let row = [];
-    for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
-      row.push(null);
-    };
-    board.push(row);
-  };
-let numberOfBombsPlaced = 0;
-while (numberOfBombsPlaced < numberOfBombs) {
-  // Need to learn about Control Flow to stop bombs from stacking
-  let randomRowIndex = Math.floor(Math.random() * numberOfRows);
-  let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
-  if (board[randomRowIndex][randomColumnIndex] !== 'B') {
-    board[randomRowIndex][randomColumnIndex] = 'B';
-    numberOfBombsPlaced++
-  }
-}
-  return board;
-};
 
 const getNumberOfNeighborBombs = (bombBoard, rowsIndex, columnIndex) => {
   const neighborOffsets = [
@@ -101,7 +117,7 @@ const getNumberOfNeighborBombs = (bombBoard, rowsIndex, columnIndex) => {
     [1,-1],
     [1,0],
     [1,1]
-  ];
+  ];_
   const numberOfRows = bombBoard.length;
   const numberOfColumns = bombBoard[0].length;
   let numberOfBombs = 0;
@@ -117,9 +133,6 @@ const getNumberOfNeighborBombs = (bombBoard, rowsIndex, columnIndex) => {
   return numberOfBombs;
 };
 
-print(board) {
-  console.log(board.map(row => row.join(' | ')).join('\n'));
-};
 
 let playerBoard = generatePlayerBoard(3,4);
 let bombBoard = generateBombBoard(3,4,5);
