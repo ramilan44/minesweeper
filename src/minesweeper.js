@@ -3,12 +3,13 @@ class Game {
   constructor(numberOfRows,numberOfColumns,numberOfBombs) {
     this._board = new Board(numberOfRows, numberOfColumns, numberOfBombs);
   }
+
   playMove(rowsIndex, columnIndex) {
     this._board.flipTile(rowsIndex, columnIndex);
     if (this._board.playerBoard[rowsIndex][columnIndex] === 'B') {
-      console.log('The game is over!');
+      console.log('The game is over! Final Board:');
       this._board.print();
-    } else if (this._board.hasSafeTiles()) {
+    } else if (!this._board.hasSafeTiles()) {
       console.log('You have won the game!');
     } else {
       console.log('Current Board:');
@@ -31,12 +32,11 @@ class Board {
 
   flipTile(rowsIndex, columnIndex) {
     if (this._playerBoard[rowsIndex][columnIndex] !== ' ') {
-      console.log('This tile has already been flipped!');
       return;
     } else if (this._bombBoard[rowsIndex][columnIndex] === 'B'){
       this._playerBoard[rowsIndex][columnIndex] = 'B';
     } else {
-      this._playerBoard[rowsIndex][columnIndex] = this.getNumberOfNeighborBombs(bombBoard, rowsIndex, columnIndex);
+      this._playerBoard[rowsIndex][columnIndex] = this.getNumberOfNeighborBombs(rowsIndex, columnIndex);
     }
     this._numberOfTiles--;
   }
@@ -52,14 +52,14 @@ class Board {
       [1,0],
       [1,1]
     ];
-    //const numberOfRows = this._bombBoard.length;
-    //const numberOfColumns = this._bombBoard[0].length;
+    const numberOfRows = this._bombBoard.length;
+    const numberOfColumns = this._bombBoard[0].length;
     let numberOfBombs = 0;
     neighborOffsets.forEach(offset => {
-      const neighborRowIndex = rowsIndex + offset[1];
-      const neighborColumnIndex = columnIndex + offset[0];
+      const neighborRowIndex = rowsIndex + offset[0];
+      const neighborColumnIndex = columnIndex + offset[1];
       if (neighborRowIndex >= 0 && neighborRowIndex < numberOfRows && neighborColumnIndex >= 0 && neighborColumnIndex < numberOfColumns) {
-        if (this._bombBoard[neighborRowIndex][neighborColumnIndex] = 'B') {
+        if (this._bombBoard[neighborRowIndex][neighborColumnIndex] === 'B') {
           numberOfBombs++;
         }
       }
@@ -73,13 +73,13 @@ class Board {
     }
 
   print() {
-    console.log(board.map(row => row.join(' | ')).join('\n'));
+    console.log(this._playerBoard.map(row => row.join(' | ')).join('\n'));
   }
 
   static generatePlayerBoard(numberOfRows, numberOfColumns){
-    let board = [];
+    const board = [];
     for (let rowsIndex = 0; rowsIndex < numberOfRows; rowsIndex++) {
-      let row = [];
+      const row = [];
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
         row.push(' ');
       };
@@ -88,7 +88,7 @@ class Board {
     return board;
   }
   static generateBombBoard(numberOfRows, numberOfColumns, numberOfBombs) {
-    let board = [];
+    const board = [];
     for (let rowsIndex = 0; rowsIndex < numberOfRows; rowsIndex++) {
       let row = [];
       for (let columnIndex = 0; columnIndex < numberOfColumns; columnIndex++) {
@@ -99,8 +99,8 @@ class Board {
   let numberOfBombsPlaced = 0;
   while (numberOfBombsPlaced < numberOfBombs) {
     // Need to learn about Control Flow to stop bombs from stacking
-    let randomRowIndex = Math.floor(Math.random() * numberOfRows);
-    let randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
+    const randomRowIndex = Math.floor(Math.random() * numberOfRows);
+    const randomColumnIndex = Math.floor(Math.random() * numberOfColumns);
     if (board[randomRowIndex][randomColumnIndex] !== 'B') {
       board[randomRowIndex][randomColumnIndex] = 'B';
       numberOfBombsPlaced++
